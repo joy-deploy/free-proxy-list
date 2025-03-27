@@ -17,42 +17,6 @@ Simple, clean proxy lists updated every 6 hours. No registration, no limits.
 - [SOCKS4 Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt) 
 - [SOCKS5 Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt)
 
-## API Access
-
-Easily access proxies via our API:
-
-```
-http://api.proxyprovider.net/api/free-proxies/all
-```
-
-Response format:
-```json
-{
-  "data": [
-    {
-      "ip": "216.229.112.25",
-      "port": "8080",
-      "ipPort": "216.229.112.25:8080",
-      "country": "US",
-      "proxy_level": "elite",
-      "type": "http",
-      "supports_https": false,
-      "supports_get": true,
-      "supports_post": true,
-      "country_name": "United States"
-    },
-    ...
-  ],
-  "meta": {
-    "total": 5
-  }
-}
-```
-
-### Need Premium API Access?
-
-For high-volume requests, 99.9% uptime SLA, and dedicated support, check out our [Premium API Plans](https://proxyprovider.net/api)
-
 ## Batch Download
 
 ### Linux/macOS
@@ -360,6 +324,42 @@ Our proxies are perfect for:
 - Price comparison
 - Game automation
 - Accessing geo-restricted content
+
+## API Access
+
+Easily access proxies via our API:
+
+```
+http://api.proxyprovider.net/api/free-proxies/all
+```
+
+Response format:
+```json
+{
+  "data": [
+    {
+      "ip": "216.229.112.25",
+      "port": "8080",
+      "ipPort": "216.229.112.25:8080",
+      "country": "US",
+      "proxy_level": "elite",
+      "type": "http",
+      "supports_https": false,
+      "supports_get": true,
+      "supports_post": true,
+      "country_name": "United States"
+    },
+    ...
+  ],
+  "meta": {
+    "total": 5
+  }
+}
+```
+
+### Need Premium API Access?
+
+For high-volume requests, 99.9% uptime SLA, and dedicated support, check out our [Premium API Plans](https://proxyprovider.net/pricing)
 
 ## 📜 License
 
