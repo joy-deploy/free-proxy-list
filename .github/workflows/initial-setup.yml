@@ -10,11 +10,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create directory structure
         run: |
           mkdir -p data/latest/types/{http,socks4,socks5}
-          mkdir -p .github/workflows
+
+          # Get current date/time
+          YEAR_MONTH=$(date +"%Y-%m")
+          DAY=$(date +"%d")
+          HOUR=$(date +"%H")
+          HOUR_ROUNDED=$(( ($HOUR / 6) * 6 ))
+          HOUR_FORMATTED=$(printf "%02d-00" $HOUR_ROUNDED)
+          mkdir -p "data/$YEAR_MONTH/$DAY/$HOUR_FORMATTED"
 
       - name: Setup basic README info
         run: |
