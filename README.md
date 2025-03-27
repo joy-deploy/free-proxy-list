@@ -1,5 +1,8 @@
 # Free Proxy List
 
+![Proxy List](https://img.shields.io/badge/Proxies-Updated_Every_6_Hours-brightgreen)
+![GitHub stars](https://img.shields.io/github/stars/thenasty1337/free-proxy-list?style=social)
+![GitHub forks](https://img.shields.io/github/forks/thenasty1337/free-proxy-list?style=social)
 This repository contains regularly updated lists of free proxies in both JSON and TXT formats.
 
 ## Structure
@@ -18,10 +21,10 @@ This repository contains regularly updated lists of free proxies in both JSON an
 
 ### TXT Format (IP:PORT)
 Simply grab the raw version of the TXT file:
-- Latest proxies: https://raw.githubusercontent.com/USERNAME/free-proxy-list/main/data/latest/proxies.txt
-- Latest HTTP proxies: https://raw.githubusercontent.com/USERNAME/free-proxy-list/main/data/latest/types/http/proxies.txt
-- Latest SOCKS4 proxies: https://raw.githubusercontent.com/USERNAME/free-proxy-list/main/data/latest/types/socks4/proxies.txt
-- Latest SOCKS5 proxies: https://raw.githubusercontent.com/USERNAME/free-proxy-list/main/data/latest/types/socks5/proxies.txt
+- Latest proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/proxies.txt
+- Latest HTTP proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/http/proxies.txt
+- Latest SOCKS4 proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt
+- Latest SOCKS5 proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt
 
 ### JSON Format
 JSON files contain complete proxy details including:
