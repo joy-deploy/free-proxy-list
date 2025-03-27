@@ -4,42 +4,206 @@
 ![GitHub stars](https://img.shields.io/github/stars/thenasty1337/free-proxy-list?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/thenasty1337/free-proxy-list?style=social)
 
-This repository contains regularly updated lists of free proxies in both JSON and TXT formats.
+Simple, clean proxy lists updated every 6 hours. No registration, no limits.
 
-## Structure
+## Quick Access
 
-- `/data/latest/` - Contains the most recent proxy lists
-  - `proxies.json` - Complete proxy details in JSON format
-  - `proxies.txt` - Simple IP:PORT format, one proxy per line
-  - `/types/` - Proxies organized by type
-    - `/http/` - HTTP proxies
-    - `/socks4/` - SOCKS4 proxies
-    - `/socks5/` - SOCKS5 proxies
+### Plain Text Lists (IP:PORT)
 
-- `/data/YYYY-MM/DD/HH-MM/` - Historical proxy lists organized by timestamp
+- [All Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/proxies.txt)
+- [HTTP Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/http/proxies.txt)
+- [SOCKS4 Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt) 
+- [SOCKS5 Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt)
 
-## Usage
+## Batch Download
 
-### TXT Format (IP:PORT)
-Simply grab the raw version of the TXT file:
-- Latest proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/proxies.txt
-- Latest HTTP proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/http/proxies.txt
-- Latest SOCKS4 proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt
-- Latest SOCKS5 proxies: https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt
+### Linux/macOS
+```bash
+# Download all proxy lists
+mkdir -p proxies && cd proxies
+curl -s https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/proxies.txt -o all.txt
+curl -s https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/http/proxies.txt -o http.txt
+curl -s https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt -o socks4.txt
+curl -s https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt -o socks5.txt
+```
 
-### JSON Format
-JSON files contain complete proxy details including:
+### Windows (PowerShell)
+```powershell
+# Download all proxy lists
+New-Item -Path "proxies" -ItemType Directory -Force
+cd proxies
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/proxies.txt" -OutFile "all.txt"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/http/proxies.txt" -OutFile "http.txt"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt" -OutFile "socks4.txt"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt" -OutFile "socks5.txt"
+```
+
+## Automation Tools
+
+### Proxy Rotation Script (Python)
+```python
+import requests
+import random
+import time
+
+def get_proxies(proxy_type='all'):
+    """Fetch the latest proxies from the repo"""
+    base_url = "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest"
+    
+    if proxy_type == 'http':
+        url = f"{base_url}/types/http/proxies.txt"
+    elif proxy_type == 'socks4':
+        url = f"{base_url}/types/socks4/proxies.txt"
+    elif proxy_type == 'socks5':
+        url = f"{base_url}/types/socks5/proxies.txt"
+    else:
+        url = f"{base_url}/proxies.txt"
+    
+    response = requests.get(url)
+    if response.status_code == 200:
+        return [line.strip() for line in response.text.splitlines() if line.strip()]
+    return []
+
+def test_proxy(proxy, test_url="https://api.ipify.org/"):
+    """Test if a proxy is working"""
+    try:
+        ip, port = proxy.split(':')
+        proxies = {
+            'http': f'http://{proxy}',
+            'https': f'http://{proxy}'
+        }
+        response = requests.get(test_url, proxies=proxies, timeout=5)
+        return response.status_code == 200
+    except:
+        return False
+
+def get_working_proxy(proxy_type='all', max_attempts=10):
+    """Get a working proxy with retries"""
+    proxies = get_proxies(proxy_type)
+    random.shuffle(proxies)
+    
+    for _ in range(max_attempts):
+        if not proxies:
+            proxies = get_proxies(proxy_type)
+            if not proxies:
+                return None
+        
+        proxy = proxies.pop(0)
+        if test_proxy(proxy):
+            return proxy
+            
+    return None
+
+# Example usage
+proxy = get_working_proxy('http')
+if proxy:
+    print(f"Found working proxy: {proxy}")
+    # Use the proxy
+    proxies = {
+        'http': f'http://{proxy}',
+        'https': f'http://{proxy}'
+    }
+    response = requests.get("https://api.ipify.org/", proxies=proxies)
+    print(f"Current IP: {response.text}")
+```
+
+## Usage Examples
+
+### cURL
+```bash
+curl -x 216.229.112.25:8080 https://api.ipify.org/
+```
+
+### Python
+```python
+import requests
+
+proxies = {
+    'http': 'http://216.229.112.25:8080',
+    'https': 'http://216.229.112.25:8080',
+}
+
+response = requests.get('https://api.ipify.org/', proxies=proxies)
+print(response.text)
+```
+
+### Node.js
+```javascript
+const axios = require('axios');
+
+const proxy = {
+  host: '216.229.112.25',
+  port: 8080
+};
+
+axios.get('https://api.ipify.org/', { proxy })
+  .then(response => console.log(response.data));
+```
+
+### PHP
+```php
+<?php
+$proxy = '216.229.112.25:8080';
+$context = stream_context_create([
+    'http' => [
+        'proxy' => "tcp://$proxy",
+        'request_fulluri' => true,
+    ],
+]);
+echo file_get_contents('https://api.ipify.org/', false, $context);
+?>
+```
+
+### Wget
+```bash
+wget -e use_proxy=yes -e http_proxy=216.229.112.25:8080 https://api.ipify.org/
+```
+
+### Go
+```go
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "net/http"
+    "net/url"
+)
+
+func main() {
+    proxyURL, _ := url.Parse("http://216.229.112.25:8080")
+    client := &http.Client{
+        Transport: &http.Transport{
+            Proxy: http.ProxyURL(proxyURL),
+        },
+    }
+    resp, _ := client.Get("https://api.ipify.org/")
+    body, _ := ioutil.ReadAll(resp.Body)
+    fmt.Println(string(body))
+}
+```
+
+## Formats Available
+
+### Plain Text (IP:PORT)
+One proxy per line:
+```
+216.229.112.25:8080
+168.196.214.187:80
+41.219.117.1:80
+```
+
+### JSON (Detailed Information)
+For advanced use cases, JSON files include:
 - IP address and port
 - Country
-- Speed
-- Protocol support details
-- Last checked time
+- Proxy type (HTTP, SOCKS4, SOCKS5)
+- Performance metrics
+- Support details
 
 ## Updates
-The proxy lists are automatically updated every 6 hours.
 
-## License
-This data is free to use for any purpose.
+Proxies are automatically verified and updated every 6 hours, so you always have fresh working proxies.
 
 ## 🔄 Latest Update
 
