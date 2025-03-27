@@ -1,0 +1,32 @@
+name: Initial Repository Setup
+
+on:
+  workflow_dispatch: # Manual trigger only
+
+jobs:
+  initial-setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create directory structure
+        run: |
+          mkdir -p data/latest/types/{http,socks4,socks5}
+          mkdir -p .github/workflows
+
+      - name: Setup basic README info
+        run: |
+          REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
+          OWNER_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)
+
+          sed -i "s/USERNAME/$OWNER_NAME/g" README.md
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add data/ README.md
+          git commit -m "Initial repository setup" || echo "No changes to commit"
+          git push

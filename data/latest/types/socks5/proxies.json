@@ -1,0 +1,19 @@
+[
+  {
+    "id": 4,
+    "ip": "127.182.151.225",
+    "port": "1080",
+    "ipPort": "127.182.151.225:1080",
+    "country": "SG",
+    "last_checked": "2025-03-27T18:00:01.000000Z",
+    "proxy_level": "elite",
+    "type": "socks5",
+    "speed": 18,
+    "supports_https": false,
+    "supports_get": true,
+    "supports_post": true,
+    "supports_user_agent": true,
+    "country_name": "Singapore",
+    "country_flag": "🇸🇬"
+  }
+] 

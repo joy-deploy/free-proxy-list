@@ -1,0 +1,149 @@
+name: Update Proxies
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # Run every 6 hours
+  workflow_dispatch: # Allow manual triggers
+
+jobs:
+  update-proxies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Update proxies
+        run: |
+          cat > update_proxies.py << 'EOF'
+          import requests
+          import json
+          import os
+          from datetime import datetime
+          import time
+
+          def create_dir_structure():
+              # Get current time
+              now = datetime.now()
+              
+              # Format folders based on date and time
+              year_month = now.strftime('%Y-%m')
+              day = now.strftime('%d')
+              
+              # Get hour and round to nearest 6-hour interval (00, 06, 12, 18)
+              hour = now.hour
+              hour_rounded = (hour // 6) * 6
+              hour_formatted = f'{hour_rounded:02d}-00'
+              
+              # Create directory path
+              dir_path = f'data/{year_month}/{day}/{hour_formatted}'
+              
+              if not os.path.exists(dir_path):
+                  os.makedirs(dir_path)
+                  print(f'Created directory: {dir_path}')
+              
+              # Also ensure 'latest' directory exists
+              latest_dir = 'data/latest'
+              if not os.path.exists(latest_dir):
+                  os.makedirs(latest_dir)
+              
+              # Ensure type directories exist
+              for proxy_type in ['http', 'socks4', 'socks5']:
+                  type_dir = os.path.join(latest_dir, 'types', proxy_type)
+                  if not os.path.exists(type_dir):
+                      os.makedirs(type_dir)
+              
+              return dir_path, latest_dir
+
+          def fetch_proxies():
+              API_URL = 'http://api.proxyprovider.net/api/free-proxies/all'
+              
+              try:
+                  response = requests.get(API_URL, timeout=30)
+                  response.raise_for_status()  # Raise exception for HTTP errors
+                  
+                  data = response.json()
+                  proxies = data.get('data', [])
+                  
+                  if not proxies:
+                      print('Warning: No proxies found in API response')
+                      return []
+                      
+                  print(f'Successfully fetched {len(proxies)} proxies')
+                  return proxies
+              except Exception as e:
+                  print(f'Error fetching proxies: {str(e)}')
+                  return []
+
+          def save_proxies(proxies, dir_path, latest_dir):
+              if not proxies:
+                  print('No proxies to save')
+                  return
+              
+              # Save to timestamp directory
+              json_path = os.path.join(dir_path, 'proxies.json')
+              with open(json_path, 'w') as f:
+                  json.dump(proxies, f, indent=2)
+              
+              txt_path = os.path.join(dir_path, 'proxies.txt')
+              with open(txt_path, 'w') as f:
+                  for proxy in proxies:
+                      ip_port = proxy.get('ipPort') or f"{proxy.get('ip')}:{proxy.get('port')}"
+                      f.write(f'{ip_port}\n')
+              
+              # Save to 'latest' directory
+              with open(os.path.join(latest_dir, 'proxies.json'), 'w') as f:
+                  json.dump(proxies, f, indent=2)
+              
+              with open(os.path.join(latest_dir, 'proxies.txt'), 'w') as f:
+                  for proxy in proxies:
+                      ip_port = proxy.get('ipPort') or f"{proxy.get('ip')}:{proxy.get('port')}"
+                      f.write(f'{ip_port}\n')
+              
+              # Sort by type and save
+              proxy_types = {}
+              for proxy in proxies:
+                  proxy_type = proxy.get('type', 'unknown').lower()
+                  if proxy_type not in proxy_types:
+                      proxy_types[proxy_type] = []
+                  proxy_types[proxy_type].append(proxy)
+              
+              for proxy_type, type_proxies in proxy_types.items():
+                  if proxy_type in ['http', 'socks4', 'socks5']:
+                      type_dir = os.path.join(latest_dir, 'types', proxy_type)
+                      
+                      # JSON
+                      with open(os.path.join(type_dir, 'proxies.json'), 'w') as f:
+                          json.dump(type_proxies, f, indent=2)
+                      
+                      # TXT
+                      with open(os.path.join(type_dir, 'proxies.txt'), 'w') as f:
+                          for proxy in type_proxies:
+                              ip_port = proxy.get('ipPort') or f"{proxy.get('ip')}:{proxy.get('port')}"
+                              f.write(f'{ip_port}\n')
+              
+              print(f'Successfully saved {len(proxies)} proxies')
+
+          # Main execution
+          dir_path, latest_dir = create_dir_structure()
+          proxies = fetch_proxies()
+          save_proxies(proxies, dir_path, latest_dir)
+          EOF
+
+          python update_proxies.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add data/
+          git commit -m "Update proxies - $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push
