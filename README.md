@@ -4,6 +4,8 @@
 ![GitHub stars](https://img.shields.io/github/stars/thenasty1337/free-proxy-list?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/thenasty1337/free-proxy-list?style=social)
 
+🔥 **Need Reliable Premium Proxies?** [Get Enterprise-Grade Proxies at ProxyProvider.net](https://proxyprovider.net) 🔥
+
 Simple, clean proxy lists updated every 6 hours. No registration, no limits.
 
 ## Quick Access
@@ -14,6 +16,42 @@ Simple, clean proxy lists updated every 6 hours. No registration, no limits.
 - [HTTP Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/http/proxies.txt)
 - [SOCKS4 Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt) 
 - [SOCKS5 Proxies](https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt)
+
+## API Access
+
+Easily access proxies via our API:
+
+```
+http://api.proxyprovider.net/api/free-proxies/all
+```
+
+Response format:
+```json
+{
+  "data": [
+    {
+      "ip": "216.229.112.25",
+      "port": "8080",
+      "ipPort": "216.229.112.25:8080",
+      "country": "US",
+      "proxy_level": "elite",
+      "type": "http",
+      "supports_https": false,
+      "supports_get": true,
+      "supports_post": true,
+      "country_name": "United States"
+    },
+    ...
+  ],
+  "meta": {
+    "total": 5
+  }
+}
+```
+
+### Need Premium API Access?
+
+For high-volume requests, 99.9% uptime SLA, and dedicated support, check out our [Premium API Plans](https://proxyprovider.net/api)
 
 ## Batch Download
 
@@ -37,6 +75,22 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-prox
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks4/proxies.txt" -OutFile "socks4.txt"
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/thenasty1337/free-proxy-list/main/data/latest/types/socks5/proxies.txt" -OutFile "socks5.txt"
 ```
+
+## Why Premium Proxies?
+
+While these free proxies are great for basic testing, they have limitations:
+- **Limited Speed**: Free proxies are often overloaded
+- **Unreliable Uptime**: May go offline without notice
+- **Shared IPs**: Used by many other users
+- **Limited Location Options**: Mostly from a few countries
+
+**[Upgrade to Premium Proxies](https://proxyprovider.net)** for:
+- ✅ 99.9% Uptime Guarantee
+- ✅ Lightning-Fast Speeds (100Mbps+)
+- ✅ Dedicated IPs (not shared)
+- ✅ 195+ Countries Available
+- ✅ 24/7 Technical Support
+- ✅ Unlimited Bandwidth
 
 ## Automation Tools
 
@@ -204,6 +258,14 @@ For advanced use cases, JSON files include:
 ## Updates
 
 Proxies are automatically verified and updated every 6 hours, so you always have fresh working proxies.
+
+---
+
+### 🚀 Need enterprise-grade proxies for mission-critical applications?
+
+[ProxyProvider.net](https://proxyprovider.net) offers premium residential, datacenter, and mobile proxies with guaranteed uptime, dedicated support, and advanced features.
+
+**Special offer:** Use code `GITHUB10` for 10% off your first order!
 
 ## 🔄 Latest Update
 
