@@ -21,6 +21,11 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
       - name: Update proxies
         run: |
           # Create directories
@@ -41,19 +46,19 @@ jobs:
           echo "$RESPONSE" > "data/$YEAR_MONTH/$DAY/$HOUR_FORMATTED/proxies.json"
           echo "$RESPONSE" > "data/latest/proxies.json"
 
-          # Extract IP:PORT
-          echo "$RESPONSE" | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/$YEAR_MONTH/$DAY/$HOUR_FORMATTED/proxies.txt"
-          echo "$RESPONSE" | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/latest/proxies.txt"
+          # Extract IP:PORT for all proxies
+          cat "data/latest/proxies.json" | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/$YEAR_MONTH/$DAY/$HOUR_FORMATTED/proxies.txt"
+          cat "data/latest/proxies.json" | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/latest/proxies.txt"
 
-          # Extract by type
-          echo "$RESPONSE" | grep -o '"type":"http"[^}]*}' > "data/latest/types/http/proxies.json"
-          echo "$RESPONSE" | grep -o '"type":"socks4"[^}]*}' > "data/latest/types/socks4/proxies.json"
-          echo "$RESPONSE" | grep -o '"type":"socks5"[^}]*}' > "data/latest/types/socks5/proxies.json"
+          # Extract JSON by type
+          cat "data/latest/proxies.json" | jq '[.data[] | select(.type == "http")]' > "data/latest/types/http/proxies.json" 2>/dev/null || echo "[]" > "data/latest/types/http/proxies.json"
+          cat "data/latest/proxies.json" | jq '[.data[] | select(.type == "socks4")]' > "data/latest/types/socks4/proxies.json" 2>/dev/null || echo "[]" > "data/latest/types/socks4/proxies.json"
+          cat "data/latest/proxies.json" | jq '[.data[] | select(.type == "socks5")]' > "data/latest/types/socks5/proxies.json" 2>/dev/null || echo "[]" > "data/latest/types/socks5/proxies.json"
 
           # Extract IP:PORT by type
-          echo "$RESPONSE" | grep -o '"type":"http"[^}]*"ipPort":"[^"]*"' | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/latest/types/http/proxies.txt"
-          echo "$RESPONSE" | grep -o '"type":"socks4"[^}]*"ipPort":"[^"]*"' | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/latest/types/socks4/proxies.txt"
-          echo "$RESPONSE" | grep -o '"type":"socks5"[^}]*"ipPort":"[^"]*"' | grep -o '"ipPort":"[^"]*"' | cut -d'"' -f4 > "data/latest/types/socks5/proxies.txt"
+          cat "data/latest/proxies.json" | jq -r '.data[] | select(.type == "http") | .ipPort' > "data/latest/types/http/proxies.txt" 2>/dev/null || touch "data/latest/types/http/proxies.txt"
+          cat "data/latest/proxies.json" | jq -r '.data[] | select(.type == "socks4") | .ipPort' > "data/latest/types/socks4/proxies.txt" 2>/dev/null || touch "data/latest/types/socks4/proxies.txt"
+          cat "data/latest/proxies.json" | jq -r '.data[] | select(.type == "socks5") | .ipPort' > "data/latest/types/socks5/proxies.txt" 2>/dev/null || touch "data/latest/types/socks5/proxies.txt"
 
       - name: Commit and push changes
         env:
