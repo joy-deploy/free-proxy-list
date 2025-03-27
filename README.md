@@ -1,8 +1,8 @@
 # Free Proxy List
 
 ![Proxy List](https://img.shields.io/badge/Proxies-Updated_Every_6_Hours-brightgreen)
-![GitHub stars](https://img.shields.io/github/stars/thenasty1337/free-proxy-list?style=social)
-![GitHub forks](https://img.shields.io/github/forks/thenasty1337/free-proxy-list?style=social)
+![GitHub stars](https://img.shields.io/github/stars/thenasty1337/free-proxy-list)
+![GitHub forks](https://img.shields.io/github/forks/thenasty1337/free-proxy-list)
 
 🔥 **Need Reliable Premium Proxies?** [Get Enterprise-Grade Proxies at ProxyProvider.net](https://proxyprovider.net) 🔥
 
